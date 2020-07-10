@@ -1,0 +1,26 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+body {
+  max-width: 1000px;
+}
+
+.todo-description {
+  font-size: 18px;
+  margin-bottom: 1em;
+}
+
+#done-option {
+  margin-left: 2em;
+}
+
+#sort-option {
+  margin-left: 2em;
+}
+

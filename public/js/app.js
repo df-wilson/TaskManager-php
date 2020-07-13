@@ -2011,6 +2011,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     var _this = this;
@@ -2112,6 +2113,20 @@ __webpack_require__.r(__webpack_exports__);
             }
           }
         }
+      });
+    },
+    onDueDateChanged: function onDueDateChanged(index) {
+      console.log("In on dueDateChanged. Index is " + index);
+      axios({
+        method: 'put',
+        url: '/api/todo/due/' + this.todos[index].id,
+        data: {
+          due: this.todos[index].due_at
+        }
+      }).then(function (response) {
+        if (response.data.msg != "ok") {}
+      })["catch"](function (error) {
+        console.log('Error updating todo: ' + error);
       });
     },
     onStatusChanged: function onStatusChanged(index) {
@@ -38271,6 +38286,9 @@ var render = function() {
                         },
                         domProps: { value: todo.due_at },
                         on: {
+                          change: function($event) {
+                            return _vm.onDueDateChanged(index)
+                          },
                           input: function($event) {
                             if ($event.target.composing) {
                               return

@@ -91,7 +91,8 @@
                                   min="2018-07-22"
                                   max="2050-12-31"
                                   v-bind:class="{'text-danger': isTodoDue(todo.due_at)}"
-                                  v-model="todo.due_at">
+                                  v-model="todo.due_at"
+                                  v-on:change="onDueDateChanged(index)">
                           <button type="button" v-on:click="remove(todo.id)" class="btn btn-danger float-right">X</button>
                       </p>
                   </div>
@@ -223,6 +224,26 @@
                             }
                         }
                      });
+            },
+
+            onDueDateChanged(index) {
+                console.log("In on dueDateChanged. Index is " + index);
+                axios({
+                   method: 'put',
+                   url: '/api/todo/due/'+this.todos[index].id,
+                   data: {
+                      due: this.todos[index].due_at
+                   }
+                })
+                 .then(function(response)
+                 {
+                     if(response.data.msg != "ok") {
+                     }
+                 })
+                 .catch(function(error)
+                 {
+                    console.log('Error updating todo: ' + error);
+                 });
             },
 
             onStatusChanged(index) {

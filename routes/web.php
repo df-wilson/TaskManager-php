@@ -19,10 +19,10 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::post('api/task', 'TodoController@store');
-Route::get('api/task', 'TodoController@all');
-Route::delete('api/todo/{id}', 'TodoController@delete');
-Route::put('api/task/priority/{id}', 'TodoController@updatePriority');
-Route::put('api/task/status/{id}', 'TodoController@updateStatus');
-Route::put('api/task/due/{id}', 'TodoController@updateDueDate');
+Route::post('api/task', 'TaskController@store');
+Route::get('api/task', 'TaskController@all');
+Route::delete('api/todo/{id}', 'TaskController@delete');
+Route::put('api/task/priority/{id}', 'TaskController@updatePriority');
+Route::put('api/task/status/{id}', 'TaskController@updateStatus');
+Route::put('api/task/due/{id}', 'TaskController@updateDueDate');
 

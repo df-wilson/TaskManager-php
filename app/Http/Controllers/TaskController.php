@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Repository\TodosRepository;
+
+use App\Repository\TaskRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-class TodoController extends Controller
+class TaskController extends Controller
 {
     public function all()
     {
@@ -16,8 +17,8 @@ class TodoController extends Controller
         $todos = [];
 
         if(Auth::check()) {
-            $todoRepository = new TodosRepository();
-            $todos = $todoRepository->all(Auth::id());
+            $taskRepository = new TaskRepository();
+            $todos = $taskRepository->all(Auth::id());
             $message = "ok";
             $statusCode = 200;
         } else {
@@ -36,15 +37,15 @@ class TodoController extends Controller
     
     public function delete(int $id)
     {
-        logger("TodoController::delete - Enter");
+        logger("TaskController::delete - Enter");
 
         $message = "not authorized";
         $statusCode = 401;
         $numDeleted = 0;
 
         if(Auth::check()) {
-            $todoRepository = new TodosRepository();
-            $numDeleted = $todoRepository->delete(Auth::id(), $id);
+            $taskRepository = new TaskRepository();
+            $numDeleted = $taskRepository->delete(Auth::id(), $id);
 
             if($numDeleted == 0) {
                 $message = "not found";
@@ -54,14 +55,14 @@ class TodoController extends Controller
                 $statusCode = 200;
             }
             else {
-                Log::error("TodoController::delete - ERROR: More than 1 record deleted. ", ["Num Deleted" => $numDeleted]);
+                Log::error("TaskController::delete - ERROR: More than 1 record deleted. ", ["Num Deleted" => $numDeleted]);
             }
         } else {
             $message = "not authorized";
             $statusCode = 401;
         }
 
-        logger("TodoController::delete - Leave");
+        logger("TaskController::delete - Leave");
 
         return response()
             ->json(
@@ -72,7 +73,7 @@ class TodoController extends Controller
 
     public function store(Request $request)
     {
-        logger("TodoController::store - Enter");
+        logger("TaskController::store - Enter");
 
         $message = "server error";
         $statusCode = 500;
@@ -87,7 +88,7 @@ class TodoController extends Controller
             if($this->isValidStatus($request->input('status'))) {
                 $status = $request->input('status');
             } else {
-                Log::error("TodoController::store - Error. Invalid status: ", ["Status" => $request->input('status')]);
+                Log::error("TaskController::store - Error. Invalid status: ", ["Status" => $request->input('status')]);
                 $isError = true;
                 $message = "Invalid status";
             }
@@ -98,7 +99,7 @@ class TodoController extends Controller
             if($this->isValidPriority($request->input('priority'))) {
                 $priority = $request->input('priority');
             } else {
-                Log::error("TodoController::store - Error. Invalid priority: ", ["Priority" => $request->input('priority')]);
+                Log::error("TaskController::store - Error. Invalid priority: ", ["Priority" => $request->input('priority')]);
                 $isError = true;
                 $message = "Invalid priority";
             }
@@ -112,8 +113,8 @@ class TodoController extends Controller
             if($isError) {
                 $statusCode = 400;
             } else {
-                $todoRepository = new TodosRepository();
-                $id = $todoRepository->create(Auth::id(),
+                $taskRepository = new TaskRepository();
+                $id = $taskRepository->create(Auth::id(),
                     $description,
                     $status,
                     $priority,
@@ -128,7 +129,7 @@ class TodoController extends Controller
             $statusCode = 401;
         }
 
-        logger("TodoController::store - Leave. ", ["Message => $message", "Todo Id" => $id]);
+        logger("TaskController::store - Leave. ", ["Message => $message", "Todo Id" => $id]);
 
         return response()
             ->json(
@@ -141,7 +142,7 @@ class TodoController extends Controller
 
     public function updatePriority(int $todoId, Request $request)
     {
-        logger("TodoController::updatePriority - Enter", ["Todo Id" => $todoId]);
+        logger("TaskController::updatePriority - Enter", ["Todo Id" => $todoId]);
 
         $message = "server error";
         $statusCode = 500;
@@ -149,7 +150,7 @@ class TodoController extends Controller
         if(Auth::check()) {
             $priority = $request->input('priority');
             if($priority) {
-                $repository = new TodosRepository();
+                $repository = new TaskRepository();
                 $numUpdated = $repository->updatePriority(Auth::id(),
                                                           $todoId,
                                                           $priority);
@@ -178,7 +179,7 @@ class TodoController extends Controller
             $statusCode = 401;
         }
 
-        logger("TodoController::updatePriority - Leave", ["Status Code" => $statusCode, "Message" => $message]);
+        logger("TaskController::updatePriority - Leave", ["Status Code" => $statusCode, "Message" => $message]);
 
         return response()
             ->json(
@@ -190,7 +191,7 @@ class TodoController extends Controller
 
     public function updateStatus(int $todoId, Request $request)
     {
-        logger("TodoController::updateStatus - Enter", ["Todo Id" => $todoId]);
+        logger("TaskController::updateStatus - Enter", ["Todo Id" => $todoId]);
 
         $message = "server error";
         $statusCode = 500;
@@ -198,7 +199,7 @@ class TodoController extends Controller
         if(Auth::check()) {
             $status = $request->input('status');
             if($status) {
-                $repository = new TodosRepository();
+                $repository = new TaskRepository();
                 $numUpdated = $repository->updateStatus(Auth::id(),
                                                         $todoId,
                                                         $status);
@@ -227,7 +228,7 @@ class TodoController extends Controller
             $statusCode = 401;
         }
 
-        logger("TodoController::updateStatus - Leave", ["Status Code" => $statusCode, "Message" => $message]);
+        logger("TaskController::updateStatus - Leave", ["Status Code" => $statusCode, "Message" => $message]);
 
         return response()
             ->json(
@@ -239,7 +240,7 @@ class TodoController extends Controller
 
     public function updateDueDate(int $todoId, Request $request)
     {
-        logger("TodoController::updateDueDate - Enter", ["Todo Id" => $todoId]);
+        logger("TaskController::updateDueDate - Enter", ["Todo Id" => $todoId]);
 
         $message = "server error";
         $statusCode = 500;
@@ -247,7 +248,7 @@ class TodoController extends Controller
         if(Auth::check()) {
             $due = $request->input('due');
             if($due) {
-                $repository = new TodosRepository();
+                $repository = new TaskRepository();
                 $numUpdated = $repository->updateDueDate(Auth::id(),
                                                          $todoId,
                                                          $due);
@@ -276,7 +277,7 @@ class TodoController extends Controller
             $statusCode = 401;
         }
 
-        logger("TodoController::updateDueDate - Leave", ["Status Code" => $statusCode, "Message" => $message]);
+        logger("TaskController::updateDueDate - Leave", ["Status Code" => $statusCode, "Message" => $message]);
 
         return response()
             ->json(

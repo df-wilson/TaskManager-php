@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Repository;
+namespace App\Repository;
 
 use DateTime;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class TodosRepository
+class TaskRepository
 {
     public function all(int $userId)
     {
-        logger("TodosRepository::all - Enter.", ["User ID" => $userId]);
+        logger("TaskRepository::all - Enter.", ["User ID" => $userId]);
 
         $todos = DB::select("SELECT * FROM todos WHERE user_id = ?", [$userId]);
 
@@ -19,7 +19,7 @@ class TodosRepository
 
     public function create(int $userId, string $description, string $status, string $priority, string $dueAt)
     {
-        logger("TodosRepository::create - Enter.", ["User ID" => $userId]);
+        logger("TaskRepository::create - Enter.", ["User ID" => $userId]);
 
         $id = DB::insert('INSERT INTO todos (user_id, description, status, priority, due_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
             [
@@ -34,14 +34,14 @@ class TodosRepository
 
         $id = DB::getPdo()->lastInsertId();
 
-        logger("TodosRepository::create - Leave.", ["Todo ID" => $id]);
+        logger("TaskRepository::create - Leave.", ["Todo ID" => $id]);
 
         return $id;
     }
 
     public function delete(int $userId, $todoId)
     {
-        logger("TodosRepository::delete - Enter.", ["User ID" => $userId]);
+        logger("TaskRepository::delete - Enter.", ["User ID" => $userId]);
 
         $deleted = DB::delete('DELETE FROM todos WHERE id = ? AND user_id = ?',
             [
@@ -49,14 +49,14 @@ class TodosRepository
                 $userId
             ]);
 
-        logger("TodosRepository::delete - Leave.", ["Num Deleted" => $deleted]);
+        logger("TaskRepository::delete - Leave.", ["Num Deleted" => $deleted]);
 
         return $deleted;
     }
 
     public function updatePriority(int $userId, int $todoId, string $priority)
     {
-        logger("TodosRepository::updatePriority - Enter.", ["User ID" => $userId, "Todo Id" => $todoId, "Priority" => $priority]);
+        logger("TaskRepository::updatePriority - Enter.", ["User ID" => $userId, "Todo Id" => $todoId, "Priority" => $priority]);
 
         $updated = 0;
 
@@ -73,18 +73,18 @@ class TodosRepository
                 ]);
 
         } else {
-            Log::error("TodosRepository::updatePriority - Unknown priority.", ["Priority" => $priority]);
+            Log::error("TaskRepository::updatePriority - Unknown priority.", ["Priority" => $priority]);
             $updated = -1;
         }
 
-        logger("TodosRepository::updatePriority - Leave.", ["Num Updated" => $updated]);
+        logger("TaskRepository::updatePriority - Leave.", ["Num Updated" => $updated]);
 
         return $updated;
     }
 
     public function updateStatus(int $userId, int $todoId, string $status)
     {
-        logger("TodosRepository::updateStatus - Enter.", ["User ID" => $userId, "Todo Id" => $todoId, "Status" => $status]);
+        logger("TaskRepository::updateStatus - Enter.", ["User ID" => $userId, "Todo Id" => $todoId, "Status" => $status]);
 
         $updated = 0;
 
@@ -101,18 +101,18 @@ class TodosRepository
                 ]);
 
         } else {
-            Log::error("TodosRepository::updateStatus - Unknown status.", ["Status" => $status]);
+            Log::error("TaskRepository::updateStatus - Unknown status.", ["Status" => $status]);
             $updated = -1;
         }
 
-        logger("TodosRepository::updateStatus - Leave.", ["Num Updated" => $updated]);
+        logger("TaskRepository::updateStatus - Leave.", ["Num Updated" => $updated]);
 
         return $updated;
     }
 
     public function updateDueDate(int $userId, int $todoId, string $dueDate)
     {
-        logger("TodosRepository::updateDueDate - Enter.", ["User ID" => $userId, "Todo Id" => $todoId, "Due Date" => $dueDate]);
+        logger("TaskRepository::updateDueDate - Enter.", ["User ID" => $userId, "Todo Id" => $todoId, "Due Date" => $dueDate]);
 
         $updated = 0;
         
@@ -127,11 +127,11 @@ class TodosRepository
                 ]);
 
         } else {
-            Log::error("TodosRepository::updateDueDate - Invalid date.", ["Due Date" => $dueDate]);
+            Log::error("TaskRepository::updateDueDate - Invalid date.", ["Due Date" => $dueDate]);
             $updated = -1;
         }
 
-        logger("TodosRepository::updateDueDate - Leave.", ["Num Updated" => $updated]);
+        logger("TaskRepository::updateDueDate - Leave.", ["Num Updated" => $updated]);
 
         return $updated;
     }

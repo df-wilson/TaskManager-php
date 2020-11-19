@@ -109,7 +109,7 @@
         {
             this.currentDate = new Date().toISOString().slice(0, 10);
 
-            axios.get('/api/todo')
+            axios.get('/api/task')
                  .then(response => {
                     response.data.todos.forEach((todo) => {
                         this.todos.push({
@@ -173,7 +173,7 @@
                     return;
                 }
 
-                axios.post('/api/todo',
+                axios.post('/api/task',
                            {
                                description: this.description,
                                priority: this.priority,
@@ -212,7 +212,7 @@
 
             remove(id) {
                 let component = this;
-                axios.delete('/api/todo/'+id)
+                axios.delete('/api/task/'+id)
                      .then(function(response)
                      {
                         if(response.status === 200) {
@@ -230,7 +230,7 @@
                 console.log("In on dueDateChanged. Index is " + index);
                 axios({
                    method: 'put',
-                   url: '/api/todo/due/'+this.todos[index].id,
+                   url: '/api/task/due/'+this.todos[index].id,
                    data: {
                       due: this.todos[index].due_at
                    }
@@ -242,14 +242,14 @@
                  })
                  .catch(function(error)
                  {
-                    console.log('Error updating todo: ' + error);
+                    console.log('Error updating task: ' + error);
                  });
             },
 
             onStatusChanged(index) {
                 axios({
                    method: 'put',
-                   url: '/api/todo/status/'+this.todos[index].id,
+                   url: '/api/task/status/'+this.todos[index].id,
                    data: {
                       status: this.todos[index].status
                    }
@@ -261,14 +261,14 @@
                  })
                  .catch(function(error)
                  {
-                    console.log('Error updating todo: ' + error);
+                    console.log('Error updating task: ' + error);
                  });
             },
 
             onPriorityChanged(index) {
                 axios({
                    method: 'put',
-                   url: '/api/todo/priority/'+this.todos[index].id,
+                   url: '/api/task/priority/'+this.todos[index].id,
                    data: {
                       priority: this.todos[index].priority
                    }
@@ -280,7 +280,7 @@
                  })
                  .catch(function(error)
                  {
-                    console.log('Error updating todo: ' + error);
+                    console.log('Error updating task: ' + error);
                  });
             },
 

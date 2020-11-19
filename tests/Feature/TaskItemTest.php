@@ -2,28 +2,28 @@
 
 namespace Tests\Feature;
 
-use App\Http\Repository\TodosRepository;
+use App\Http\Repository\TasksRepository;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class TodoItemTest extends TestCase
+class TaskItemTest extends TestCase
 {
     use RefreshDatabase;
     
-    public function testCreateTodo()
+    public function testCreateTask()
     {
-        logger("TodoItemTest::testCreateTodo - Enter");
+        logger("TaskItemTest::testCreateTask - Enter");
 
         $userId = 1;
-        $description = "This is a test todo";
-        $status = "Complete";
+        $description = "This is a test task";
+        $status = "Done";
         $priority = "Medium";
         $dueDate = "2020-10-23";
 
         // Test with unauthorized user
-        $response = $this->postJson('/api/todo',
+        $response = $this->postJson('/api/task',
             [
                 'description' => $description,
                 'status' => $status,
@@ -40,7 +40,7 @@ class TodoItemTest extends TestCase
         // Test with authorized user
         $user = factory(User::class)->create();
 
-        $response = $this->actingAs($user)->postJson('/api/todo',
+        $response = $this->actingAs($user)->postJson('/api/task',
             [
                 'description' => $description,
                 'status' => $status,
@@ -54,7 +54,7 @@ class TodoItemTest extends TestCase
                      'id'  => 1
                  ]);
 
-        $this->assertDatabaseHas('todos', [
+        $this->assertDatabaseHas('tasks', [
             'id'          => 1,
             'user_id'     => $user->id,
             'description' => $description,
@@ -62,36 +62,36 @@ class TodoItemTest extends TestCase
             'priority'    => $priority
         ]);
 
-        logger("TodoItemTest::testCreateTodo - Leave");
+        logger("TaskItemTest::testCreateTask - Leave");
     }
 
-    public function testGetAllTodos()
+    public function testGetAllTasks()
     {
-        logger("TodoItemTest::testGetAllTodos - Enter");
+        logger("TaskItemTest::testGetAllTasks - Enter");
 
         $this->seed();
 
         // Test unauthorized user
-        $response = $this->get('/api/todo');
+        $response = $this->get('/api/task');
 
         $response->assertStatus(401)
             ->assertJson([
                 'msg' => 'not authorized'
             ]);
 
-        // Test authorized user, no todos
+        // Test authorized user, no tasks
         $user = factory(User::class)->create();
-        $response = $this->actingAs($user)->get('/api/todo');
+        $response = $this->actingAs($user)->get('/api/task');
 
         $response->assertStatus(200)
             ->assertJson([
                 'msg' => 'ok'
             ]);
 
-        // Test authorized user with todos
+        // Test authorized user with tasks
         $user = User::find(1);
 
-        $response = $this->actingAs($user)->get('/api/todo');
+        $response = $this->actingAs($user)->get('/api/task');
 
         $response->assertStatus(200)
             ->assertJson([
@@ -100,7 +100,7 @@ class TodoItemTest extends TestCase
                     [
                         "id" => "1",
                         "user_id" => "1",
-                        "description" => "This is the first todo for user 1.",
+                        "description" => "This is the first task for user 1.",
                         "status" => "In Progress",
                         "priority" => "High",
                         "completed_at" => null,
@@ -111,7 +111,7 @@ class TodoItemTest extends TestCase
                     [
                         "id" => "3",
                         "user_id" => "1",
-                        "description" => "This is the second todo for user 1.",
+                        "description" => "This is the second task for user 1.",
                         "status" => "Not Started",
                         "priority" => "Low",
                         "completed_at" => null,
@@ -122,141 +122,141 @@ class TodoItemTest extends TestCase
                 ]
             ]);
 
-        logger("TodoItemTest::testGetAllTodos - Leave");
+        logger("TaskItemTest::testGetAllTasks - Leave");
     }
 
-    public function testDeleteTodo()
+    public function testDeleteTask()
     {
-        logger("TodoItemTest::testDeleteTodo - Enter");
+        logger("TaskItemTest::testDeleteTask - Enter");
 
         // Test unauthorized user
-        $response = $this->delete('/api/todo/3');
+        $response = $this->delete('/api/task/3');
         $response->assertStatus(401);
 
         $this->seed();
 
-        // test valid user with unauthorized todo
+        // test valid user with unauthorized task
         $user = User::find(2);
-        $response = $this->actingAs($user)->json('PUT', '/api/todo/priority/3', ['priority' => 'High']);
+        $response = $this->actingAs($user)->json('PUT', '/api/task/priority/3', ['priority' => 'High']);
         $response->assertStatus(404);
 
         // Test authorized user
         $user = User::find(1);
 
-        $response = $this->actingAs($user)->delete('/api/todo/3');
+        $response = $this->actingAs($user)->delete('/api/task/3');
         $response->assertStatus(200);
 
-        logger("TodoItemTest::testDeleteTodo - Leave");
+        logger("TaskItemTest::testDeleteTask - Leave");
     }
 
     public function testUpdatePriority()
     {
-        logger("TodoItemTest::testUpdatePriority - Enter");
+        logger("TaskItemTest::testUpdatePriority - Enter");
 
         $this->seed();
 
         // Test unauthorized user
-        $response = $this->put('/api/todo/priority/3');
+        $response = $this->put('/api/task/priority/3');
         $response->assertStatus(401);
 
         // Test authorized user
         $user = User::find(1);
 
         // Test no priority given
-        $response = $this->actingAs($user)->put('/api/todo/priority/3');
+        $response = $this->actingAs($user)->put('/api/task/priority/3');
         $response->assertStatus(400);
 
         // Test with invalid priority
-        $response = $this->actingAs($user)->json('PUT', '/api/todo/priority/3', ['priority' => 'Unknown']);
+        $response = $this->actingAs($user)->json('PUT', '/api/task/priority/3', ['priority' => 'Unknown']);
         $response->assertStatus(400);
 
         // Test valid requests
-        $response = $this->actingAs($user)->json('PUT', '/api/todo/priority/3', ['priority' => 'High']);
+        $response = $this->actingAs($user)->json('PUT', '/api/task/priority/3', ['priority' => 'High']);
         $response->assertStatus(200);
 
-        $response = $this->actingAs($user)->json('PUT', '/api/todo/priority/3', ['priority' => 'Medium']);
+        $response = $this->actingAs($user)->json('PUT', '/api/task/priority/3', ['priority' => 'Medium']);
         $response->assertStatus(200);
 
-        $response = $this->actingAs($user)->json('PUT', '/api/todo/priority/3', ['priority' => 'Low']);
+        $response = $this->actingAs($user)->json('PUT', '/api/task/priority/3', ['priority' => 'Low']);
         $response->assertStatus(200);
 
-        // test valid user with unauthorized todo
+        // test valid user with unauthorized task
         $user = User::find(2);
-        $response = $this->actingAs($user)->json('PUT', '/api/todo/priority/3', ['priority' => 'High']);
+        $response = $this->actingAs($user)->json('PUT', '/api/task/priority/3', ['priority' => 'High']);
         $response->assertStatus(404);
 
-        logger("TodoItemTest::testUpdatePriority - Leave");
+        logger("TaskItemTest::testUpdatePriority - Leave");
     }
 
     public function testUpdateStatus()
     {
-        logger("TodoItemTest::testUpdateStatus - Enter");
+        logger("TaskItemTest::testUpdateStatus - Enter");
 
         $this->seed();
 
         // Test unauthorized user
-        $response = $this->put('/api/todo/status/3');
+        $response = $this->put('/api/task/status/3');
         $response->assertStatus(401);
 
         // Test authorized user
         $user = User::find(1);
 
         // Test no priority given
-        $response = $this->actingAs($user)->put('/api/todo/status/3');
+        $response = $this->actingAs($user)->put('/api/task/status/3');
         $response->assertStatus(400);
 
         // Test with invalid priority
-        $response = $this->actingAs($user)->json('PUT', '/api/todo/status/3', ['status' => 'Unknown']);
+        $response = $this->actingAs($user)->json('PUT', '/api/task/status/3', ['status' => 'Unknown']);
         $response->assertStatus(400);
 
         // Test valid requests
-        $response = $this->actingAs($user)->json('PUT', '/api/todo/status/3', ['status' => 'Not Started']);
+        $response = $this->actingAs($user)->json('PUT', '/api/task/status/3', ['status' => 'Not Started']);
         $response->assertStatus(200);
 
-        $response = $this->actingAs($user)->json('PUT', '/api/todo/status/3', ['status' => 'In Progress']);
+        $response = $this->actingAs($user)->json('PUT', '/api/task/status/3', ['status' => 'In Progress']);
         $response->assertStatus(200);
 
-        $response = $this->actingAs($user)->json('PUT', '/api/todo/status/3', ['status' => 'Done']);
+        $response = $this->actingAs($user)->json('PUT', '/api/task/status/3', ['status' => 'Done']);
         $response->assertStatus(200);
 
-        // test valid user with unauthorized todo
+        // test valid user with unauthorized task
         $user = User::find(2);
-        $response = $this->actingAs($user)->json('PUT', '/api/todo/status/3', ['status' => 'In Progress']);
+        $response = $this->actingAs($user)->json('PUT', '/api/task/status/3', ['status' => 'In Progress']);
         $response->assertStatus(404);
 
-        logger("TodoItemTest::testUpdateStatus - Leave");
+        logger("TaskItemTest::testUpdateStatus - Leave");
     }
 
     public function testUpdateDueDate()
     {
-        logger("TodoItemTest::testUpdateDueDate - Enter");
+        logger("TaskItemTest::testUpdateDueDate - Enter");
 
         $this->seed();
 
         // Test unauthorized user
-        $response = $this->put('/api/todo/due/3');
+        $response = $this->put('/api/task/due/3');
         $response->assertStatus(401);
 
         // Test authorized user
         $user = User::find(1);
 
         // Test no priority given
-        $response = $this->actingAs($user)->put('/api/todo/due/3');
+        $response = $this->actingAs($user)->put('/api/task/due/3');
         $response->assertStatus(400);
 
         // Test with invalid priority
-        $response = $this->actingAs($user)->json('PUT', '/api/todo/due/3', ['due' => '2020-10-5a']);
+        $response = $this->actingAs($user)->json('PUT', '/api/task/due/3', ['due' => '2020-10-5a']);
         $response->assertStatus(400);
 
         // Test valid requests
-        $response = $this->actingAs($user)->json('PUT', '/api/todo/due/3', ['due' => '2020-12-15']);
+        $response = $this->actingAs($user)->json('PUT', '/api/task/due/3', ['due' => '2020-12-15']);
         $response->assertStatus(200);
 
-        // test valid user with unauthorized todo
+        // test valid user with unauthorized task
         $user = User::find(2);
-        $response = $this->actingAs($user)->json('PUT', '/api/todo/due/3', ['due' => '2020-09-17']);
+        $response = $this->actingAs($user)->json('PUT', '/api/task/due/3', ['due' => '2020-09-17']);
         $response->assertStatus(404);
 
-        logger("TodoItemTest::testUpdateDueDate - Leave");
+        logger("TaskItemTest::testUpdateDueDate - Leave");
     }
 }

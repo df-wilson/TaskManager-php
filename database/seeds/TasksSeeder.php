@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class TodosSeeder extends Seeder
+class TasksSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,9 +11,9 @@ class TodosSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('todos')->insert([
+        DB::table('tasks')->insert([
             'user_id'    => 1,
-            'description' => 'This is the first todo for user 1.',
+            'description' => 'This is the first task for user 1.',
             'status'     => "In Progress",
             'priority'   => "High",
             'due_at'     => '2019-12-01',
@@ -21,9 +21,9 @@ class TodosSeeder extends Seeder
             'updated_at' => '2019-10-01 12:20:02'
         ]);
 
-        DB::table('todos')->insert([
+        DB::table('tasks')->insert([
             'user_id' => 2,
-            'description' => 'This is the first todo for user 2.',
+            'description' => 'This is the first task for user 2.',
             'status' => "Not Started",
             'priority' => "Medium",
             'due_at'     => '2019-12-11',
@@ -31,9 +31,9 @@ class TodosSeeder extends Seeder
             'updated_at' => '2019-10-01 12:20:02'
         ]);
 
-        DB::table('todos')->insert([
+        DB::table('tasks')->insert([
             'user_id' => 1,
-            'description' => 'This is the second todo for user 1.',
+            'description' => 'This is the second task for user 1.',
             'status' => "Not Started",
             'priority' => "Low",
             'due_at'     => '2020-02-01',

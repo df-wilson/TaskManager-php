@@ -309,7 +309,7 @@ class TaskController extends Controller
 
         if($status == "Not Started" ||
            $status == "In Progress" ||
-           $status == "Completed")
+           $status == "Done")
         {
             $isValid = true;
         }

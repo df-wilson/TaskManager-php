@@ -12,7 +12,7 @@ class TaskRepository
     {
         logger("TaskRepository::all - Enter.", ["User ID" => $userId]);
 
-        $tasks = DB::select("SELECT * FROM todos WHERE user_id = ?", [$userId]);
+        $tasks = DB::select("SELECT * FROM tasks WHERE user_id = ?", [$userId]);
 
         return $tasks;
     }
@@ -21,7 +21,7 @@ class TaskRepository
     {
         logger("TaskRepository::create - Enter.", ["User ID" => $userId]);
 
-        $id = DB::insert('INSERT INTO todos (user_id, description, status, priority, due_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        $id = DB::insert('INSERT INTO tasks (user_id, description, status, priority, due_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
             [
                 $userId,
                 $description,
@@ -43,7 +43,7 @@ class TaskRepository
     {
         logger("TaskRepository::delete - Enter.", ["User ID" => $userId]);
 
-        $deleted = DB::delete('DELETE FROM todos WHERE id = ? AND user_id = ?',
+        $deleted = DB::delete('DELETE FROM tasks WHERE id = ? AND user_id = ?',
             [
                 $taskId,
                 $userId
@@ -64,7 +64,7 @@ class TaskRepository
            $priority == "Medium" ||
            $priority == "Low")
         {
-            $updated = DB::update('UPDATE todos SET priority = :priority, updated_at = :updated_at where id = :id AND user_id = :user_id',
+            $updated = DB::update('UPDATE tasks SET priority = :priority, updated_at = :updated_at where id = :id AND user_id = :user_id',
                 [
                     'priority' => $priority,
                     'updated_at' => new \DateTime(),
@@ -92,7 +92,7 @@ class TaskRepository
             $status == "In Progress" ||
             $status == "Done")
         {
-            $updated = DB::update('UPDATE todos SET status = :status, updated_at = :updated_at where id = :id AND user_id = :user_id',
+            $updated = DB::update('UPDATE tasks SET status = :status, updated_at = :updated_at where id = :id AND user_id = :user_id',
                 [
                     'status'  => $status,
                     'updated_at' => new \DateTime(),
@@ -118,7 +118,7 @@ class TaskRepository
         
         if (DateTime::createFromFormat('Y-m-d', $dueDate) !== false)
         {
-            $updated = DB::update('UPDATE todos SET due_at = :due_at, updated_at = :updated_at where id = :id AND user_id = :user_id',
+            $updated = DB::update('UPDATE tasks SET due_at = :due_at, updated_at = :updated_at where id = :id AND user_id = :user_id',
                 [
                     'due_at'  => $dueDate,
                     'updated_at' => new \DateTime(),

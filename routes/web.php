@@ -21,7 +21,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::post('api/task', 'TaskController@store');
 Route::get('api/task', 'TaskController@all');
-Route::delete('api/todo/{id}', 'TaskController@delete');
+Route::delete('api/task/{id}', 'TaskController@delete');
 Route::put('api/task/priority/{id}', 'TaskController@updatePriority');
 Route::put('api/task/status/{id}', 'TaskController@updateStatus');
 Route::put('api/task/due/{id}', 'TaskController@updateDueDate');

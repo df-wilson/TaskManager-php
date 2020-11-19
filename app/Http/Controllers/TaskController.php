@@ -12,13 +12,15 @@ class TaskController extends Controller
 {
     public function all()
     {
+        logger("TaskController::all - Enter");
+
         $message = "server error";
         $statusCode = 500;
-        $todos = [];
+        $tasks = [];
 
         if(Auth::check()) {
             $taskRepository = new TaskRepository();
-            $todos = $taskRepository->all(Auth::id());
+            $tasks = $taskRepository->all(Auth::id());
             $message = "ok";
             $statusCode = 200;
         } else {
@@ -30,7 +32,7 @@ class TaskController extends Controller
             ->json(
             [
                 'msg' => $message,
-                'todos' => $todos
+                'todos' => $tasks
             ], $statusCode);
     }
 
@@ -129,7 +131,7 @@ class TaskController extends Controller
             $statusCode = 401;
         }
 
-        logger("TaskController::store - Leave. ", ["Message => $message", "Todo Id" => $id]);
+        logger("TaskController::store - Leave. ", ["Message" => $message, "Task Id" => $id]);
 
         return response()
             ->json(
@@ -140,9 +142,9 @@ class TaskController extends Controller
                 $statusCode);
     }
 
-    public function updatePriority(int $todoId, Request $request)
+    public function updatePriority(int $taskId, Request $request)
     {
-        logger("TaskController::updatePriority - Enter", ["Todo Id" => $todoId]);
+        logger("TaskController::updatePriority - Enter", ["Task Id" => $taskId]);
 
         $message = "server error";
         $statusCode = 500;
@@ -152,7 +154,7 @@ class TaskController extends Controller
             if($priority) {
                 $repository = new TaskRepository();
                 $numUpdated = $repository->updatePriority(Auth::id(),
-                                                          $todoId,
+                                                          $taskId,
                                                           $priority);
 
                 if($numUpdated == -1) {
@@ -160,13 +162,13 @@ class TaskController extends Controller
                     $statusCode = 400;
                 }
                 else if($numUpdated == 0) {
-                    $message = "no todos updated";
+                    $message = "no tasks updated";
                     $statusCode = 404;
                 } else if($numUpdated == 1) {
                     $message = "ok";
                     $statusCode = 200;
                 } else {
-                    Log::error("More than 1 todo updated. ", ["Num Updated" => $numUpdated]);
+                    Log::error("More than 1 task updated. ", ["Num Updated" => $numUpdated]);
                     $message = "ok";
                     $statusCode = 200;
                 }
@@ -189,9 +191,9 @@ class TaskController extends Controller
                 $statusCode);
     }
 
-    public function updateStatus(int $todoId, Request $request)
+    public function updateStatus(int $taskId, Request $request)
     {
-        logger("TaskController::updateStatus - Enter", ["Todo Id" => $todoId]);
+        logger("TaskController::updateStatus - Enter", ["Task Id" => $taskId]);
 
         $message = "server error";
         $statusCode = 500;
@@ -201,7 +203,7 @@ class TaskController extends Controller
             if($status) {
                 $repository = new TaskRepository();
                 $numUpdated = $repository->updateStatus(Auth::id(),
-                                                        $todoId,
+                                                        $taskId,
                                                         $status);
 
                 if($numUpdated == -1) {
@@ -209,13 +211,13 @@ class TaskController extends Controller
                     $statusCode = 400;
                 }
                 else if($numUpdated == 0) {
-                    $message = "no todos updated";
+                    $message = "no tasks updated";
                     $statusCode = 404;
                 } else if($numUpdated == 1) {
                     $message = "ok";
                     $statusCode = 200;
                 } else {
-                    Log::error("More than 1 todo updated. ", ["Num Updated" => $numUpdated]);
+                    Log::error("More than 1 task updated. ", ["Num Updated" => $numUpdated]);
                     $message = "ok";
                     $statusCode = 200;
                 }
@@ -238,9 +240,9 @@ class TaskController extends Controller
                 $statusCode);
     }
 
-    public function updateDueDate(int $todoId, Request $request)
+    public function updateDueDate(int $taskId, Request $request)
     {
-        logger("TaskController::updateDueDate - Enter", ["Todo Id" => $todoId]);
+        logger("TaskController::updateDueDate - Enter", ["Task Id" => $taskId]);
 
         $message = "server error";
         $statusCode = 500;
@@ -250,7 +252,7 @@ class TaskController extends Controller
             if($due) {
                 $repository = new TaskRepository();
                 $numUpdated = $repository->updateDueDate(Auth::id(),
-                                                         $todoId,
+                                                         $taskId,
                                                          $due);
 
                 if($numUpdated == -1) {
@@ -258,13 +260,13 @@ class TaskController extends Controller
                     $statusCode = 400;
                 }
                 else if($numUpdated == 0) {
-                    $message = "no todos updated";
+                    $message = "no tasks updated";
                     $statusCode = 404;
                 } else if($numUpdated == 1) {
                     $message = "ok";
                     $statusCode = 200;
                 } else {
-                    Log::error("More than 1 todo updated. ", ["Num Updated" => $numUpdated]);
+                    Log::error("More than 1 task updated. ", ["Num Updated" => $numUpdated]);
                     $message = "ok";
                     $statusCode = 200;
                 }

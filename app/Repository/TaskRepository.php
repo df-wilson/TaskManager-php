@@ -12,9 +12,9 @@ class TaskRepository
     {
         logger("TaskRepository::all - Enter.", ["User ID" => $userId]);
 
-        $todos = DB::select("SELECT * FROM todos WHERE user_id = ?", [$userId]);
+        $tasks = DB::select("SELECT * FROM todos WHERE user_id = ?", [$userId]);
 
-        return $todos;
+        return $tasks;
     }
 
     public function create(int $userId, string $description, string $status, string $priority, string $dueAt)
@@ -34,18 +34,18 @@ class TaskRepository
 
         $id = DB::getPdo()->lastInsertId();
 
-        logger("TaskRepository::create - Leave.", ["Todo ID" => $id]);
+        logger("TaskRepository::create - Leave.", ["Task ID" => $id]);
 
         return $id;
     }
 
-    public function delete(int $userId, $todoId)
+    public function delete(int $userId, $taskId)
     {
         logger("TaskRepository::delete - Enter.", ["User ID" => $userId]);
 
         $deleted = DB::delete('DELETE FROM todos WHERE id = ? AND user_id = ?',
             [
-                $todoId,
+                $taskId,
                 $userId
             ]);
 
@@ -54,9 +54,9 @@ class TaskRepository
         return $deleted;
     }
 
-    public function updatePriority(int $userId, int $todoId, string $priority)
+    public function updatePriority(int $userId, int $taskId, string $priority)
     {
-        logger("TaskRepository::updatePriority - Enter.", ["User ID" => $userId, "Todo Id" => $todoId, "Priority" => $priority]);
+        logger("TaskRepository::updatePriority - Enter.", ["User ID" => $userId, "Task Id" => $taskId, "Priority" => $priority]);
 
         $updated = 0;
 
@@ -68,7 +68,7 @@ class TaskRepository
                 [
                     'priority' => $priority,
                     'updated_at' => new \DateTime(),
-                    'id'       => $todoId,
+                    'id'       => $taskId,
                     'user_id'  => $userId
                 ]);
 
@@ -82,9 +82,9 @@ class TaskRepository
         return $updated;
     }
 
-    public function updateStatus(int $userId, int $todoId, string $status)
+    public function updateStatus(int $userId, int $taskId, string $status)
     {
-        logger("TaskRepository::updateStatus - Enter.", ["User ID" => $userId, "Todo Id" => $todoId, "Status" => $status]);
+        logger("TaskRepository::updateStatus - Enter.", ["User ID" => $userId, "Task Id" => $taskId, "Status" => $status]);
 
         $updated = 0;
 
@@ -96,7 +96,7 @@ class TaskRepository
                 [
                     'status'  => $status,
                     'updated_at' => new \DateTime(),
-                    'id'      => $todoId,
+                    'id'      => $taskId,
                     'user_id' => $userId
                 ]);
 
@@ -110,9 +110,9 @@ class TaskRepository
         return $updated;
     }
 
-    public function updateDueDate(int $userId, int $todoId, string $dueDate)
+    public function updateDueDate(int $userId, int $taskId, string $dueDate)
     {
-        logger("TaskRepository::updateDueDate - Enter.", ["User ID" => $userId, "Todo Id" => $todoId, "Due Date" => $dueDate]);
+        logger("TaskRepository::updateDueDate - Enter.", ["User ID" => $userId, "Task Id" => $taskId, "Due Date" => $dueDate]);
 
         $updated = 0;
         
@@ -122,7 +122,7 @@ class TaskRepository
                 [
                     'due_at'  => $dueDate,
                     'updated_at' => new \DateTime(),
-                    'id'      => $todoId,
+                    'id'      => $taskId,
                     'user_id' => $userId
                 ]);
 

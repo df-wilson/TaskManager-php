@@ -12,7 +12,7 @@ class TaskRepository
     {
         logger("TaskRepository::all - Enter.", ["User ID" => $userId]);
 
-        $tasks = DB::select("SELECT * FROM tasks WHERE user_id = ?", [$userId]);
+        $tasks = DB::select("SELECT * FROM tasks WHERE user_id = ? ORDER BY created_at", [$userId]);
 
         return $tasks;
     }

@@ -32,7 +32,7 @@ class TaskController extends Controller
             ->json(
             [
                 'msg' => $message,
-                'todos' => $tasks
+                'tasks' => $tasks
             ], $statusCode);
     }
 
@@ -186,7 +186,7 @@ class TaskController extends Controller
         return response()
             ->json(
                 [
-                    'msg' => $message,
+                    'msg' => $message
                 ],
                 $statusCode);
     }
@@ -284,7 +284,7 @@ class TaskController extends Controller
         return response()
             ->json(
                 [
-                    'msg' => $message,
+                    'msg' => $message
                 ],
                 $statusCode);
     }

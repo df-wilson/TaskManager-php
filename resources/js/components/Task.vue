@@ -69,7 +69,7 @@
                 <div v-for="(task, index) in tasks">
                     <div class="card" v-if="showDone || task.status != 'Done'">
                       <div class="card-body">
-                          <p class="task-description">{{ task.description }} ID: {{task.id}}</p>
+                          <p class="task-description">{{ task.description }}</p>
                           <hr>
                           <p>
                              <label for="status">Status:</label>
